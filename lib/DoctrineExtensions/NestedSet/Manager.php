@@ -74,7 +74,7 @@ class Manager
      *
      * @return array
      */
-    public function fetchTreeAsArray($rootId=null, $depth=null)
+    public function fetchTreeAsArray($rootId=null, $depth=null, $sorting=array())
     {
         $config = $this->getConfiguration();
         $lftField = $config->getLeftFieldName();
@@ -98,6 +98,10 @@ class Manager
         $qb->andWhere("$alias.$lftField >= :lowerbound")
             ->setParameter('lowerbound', 1)
             ->orderBy("$alias.$lftField", "ASC");
+
+        foreach ($sorting as $field => $direction) {
+            $qb->addOrderBy($field, $direction);
+        }
 
         if($hasManyRoots)
         {
